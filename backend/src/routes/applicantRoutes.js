@@ -67,9 +67,11 @@ router.post(
       fullName
     };
 
-    // Add profile picture path if uploaded
+    // Store profile photo as Buffer in DB if uploaded
     if (req.file) {
-      applicantData.profilePicture = req.file.path;
+      applicantData.profilePhoto = fs.readFileSync(req.file.path);
+      applicantData.profilePhotoType = req.file.mimetype;
+      fs.unlinkSync(req.file.path);
     }
 
     const applicant = new Applicant(applicantData);
@@ -78,9 +80,9 @@ router.post(
     res.status(201).json({ 
       message: 'Registration successful',
       user: {
+        _id: applicant._id,
         email: applicant.email,
-        fullName: applicant.fullName,
-        profilePicture: applicant.profilePicture
+        fullName: applicant.fullName
       }
     });
   } catch (err) {
@@ -106,7 +108,7 @@ router.post('/login', async (req, res) => {
       token, 
       email: applicant.email,
       fullName: applicant.fullName,
-      profilePicture: applicant.profilePicture
+      _id: applicant._id.toString()
     });
   } catch (err) {
     console.error('Login error:', err);
