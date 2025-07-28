@@ -76,7 +76,7 @@ One_last_time/
    ```
 4. Start backend server:
    ```bash
-   npm run dev
+   npm start
    ```
    > ✅ Server runs on `http://localhost:5000/api`
 
